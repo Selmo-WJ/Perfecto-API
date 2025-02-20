@@ -11,17 +11,15 @@ class TaskController extends Controller {
     }
 
     public function store(Request $request) {
-        // Validação simples para garantir que o nome foi enviado
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
     
         $task = new Task();
         $task->name = $request->name;
-       // $task->completed = 0; // Define como não concluído por padrão
         $task->save();
     
-        return response()->json($task, 201); // Retorna a tarefa criada com código HTTP 201 (Criado)
+        return response()->json($task, 201); 
     }
     
 
@@ -31,13 +29,11 @@ class TaskController extends Controller {
 
     public function update(Request $request, Task $task)
 {
-    // Validação dos dados recebidos
     $request->validate([
         'name' => 'sometimes|required|string|max:255',
         'completed' => 'sometimes|boolean',
     ]);
 
-    // Atualiza os valores da tarefa se foram passados
     if ($request->has('name')) {
         $task->name = $request->input('name');
     }
@@ -45,7 +41,7 @@ class TaskController extends Controller {
         $task->completed = $request->input('completed');
     }
 
-    $task->save(); // Salva a atualização no banco
+    $task->save();
 
     return response()->json([
         'message' => 'Tarefa atualizada com sucesso!',
@@ -55,10 +51,8 @@ class TaskController extends Controller {
 
 public function toggleCompleted(Request $request, Task $task)
 {
-    // Obtém o valor enviado e converte para booleano
     $completed = filter_var($request->query('completed'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
-    // Verifica se o parâmetro foi passado corretamente
     if ($completed !== null) {
         $task->completed = $completed;
         $task->save();
